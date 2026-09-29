@@ -1,6 +1,7 @@
 # 🎓 StudyLive — Live Classroom & Study Platform
 
 [![License: Apache-2.0](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE)
+[![Build APK](https://github.com/studylive/studylive/actions/workflows/build-apk.yml/badge.svg)](.github/workflows/build-apk.yml)
 [![Android CI](https://github.com/studylive/studylive/actions/workflows/android-build.yml/badge.svg)](.github/workflows/android-build.yml)
 [![Tests](https://github.com/studylive/studylive/actions/workflows/tests.yml/badge.svg)](.github/workflows/tests.yml)
 [![Code Quality](https://github.com/studylive/studylive/actions/workflows/lint.yml/badge.svg)](.github/workflows/lint.yml)

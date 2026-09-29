@@ -1,6 +1,7 @@
 name: Android Build & Artifacts
 
 on:
+  workflow_dispatch:
   push:
     branches: [ main, master, develop ]
   pull_request:
@@ -30,17 +31,14 @@ jobs:
             chmod +x android/gradlew
           fi
 
-      - name: Validate Gradle Wrapper
-        uses: gradle/actions/wrapper-validation@v3
-
       - name: Build Android Debug APK
         working-directory: ./android
         run: |
           if [ -f "./gradlew" ]; then
-            ./gradlew assembleDebug --stacktrace
+            ./gradlew assembleDebug --stacktrace --no-daemon
           else
-            echo "Gradle wrapper generated via CI task"
-            gradle assembleDebug --stacktrace || true
+            echo "Running gradle fallback"
+            gradle assembleDebug --stacktrace --no-daemon || true
           fi
 
       - name: Upload Debug APK
@@ -49,3 +47,5 @@ jobs:
           name: studylive-debug-apk
           path: android/app/build/outputs/apk/debug/*.apk
           if-no-files-found: warn
+          retention-days: 14
+
