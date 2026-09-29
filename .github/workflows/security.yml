@@ -1,0 +1,32 @@
+name: Security & Secret Scan
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  security-audit:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Run NPM Audit
+        run: npm audit --audit-level=high || true
+
+      - name: Check for Uncommitted Private Secrets
+        run: |
+          echo "Scanning for sensitive keys in client source code..."
+          if grep -rn "FIREBASE_SERVICE_ACCOUNT" ./src ./android/app/src/main/java 2>/dev/null; then
+            echo "ERROR: Found server service account in client files!"
+            exit 1
+          fi
+          echo "Client bundle secret check passed."

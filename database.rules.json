@@ -1,0 +1,86 @@
+{
+  "rules": {
+    "users": {
+      "$uid": {
+        ".read": "auth != null",
+        ".write": "auth != null && auth.uid === $uid",
+        ".validate": "newData.hasChildren(['displayName', 'email', 'role'])"
+      }
+    },
+    "classrooms": {
+      "$classroomId": {
+        ".read": "auth != null",
+        ".write": "auth != null && (!data.exists() || data.child('hostUid').val() === auth.uid || root.child('classrooms').child($classroomId).child('coHosts').child(auth.uid).val() === true)",
+        "metadata": {
+          ".read": "auth != null",
+          ".write": "auth != null && (data.parent().child('hostUid').val() === auth.uid || root.child('classrooms').child($classroomId).child('coHosts').child(auth.uid).val() === true)"
+        },
+        "settings": {
+          ".read": "auth != null",
+          ".write": "auth != null && (data.parent().child('hostUid').val() === auth.uid || root.child('classrooms').child($classroomId).child('coHosts').child(auth.uid).val() === true)"
+        },
+        "participants": {
+          "$uid": {
+            ".read": "auth != null",
+            ".write": "auth != null && (auth.uid === $uid || root.child('classrooms').child($classroomId).child('hostUid').val() === auth.uid || root.child('classrooms').child($classroomId).child('coHosts').child(auth.uid).val() === true)"
+          }
+        },
+        "presence": {
+          "$uid": {
+            ".read": "auth != null",
+            ".write": "auth != null && auth.uid === $uid"
+          }
+        },
+        "chat": {
+          ".read": "auth != null",
+          "$messageId": {
+            ".write": "auth != null && (root.child('classrooms').child($classroomId).child('settings').child('chatEnabled').val() !== false || root.child('classrooms').child($classroomId).child('hostUid').val() === auth.uid) && (!data.exists() && newData.child('senderUid').val() === auth.uid || data.exists() && (data.child('senderUid').val() === auth.uid || root.child('classrooms').child($classroomId).child('hostUid').val() === auth.uid))",
+            ".validate": "newData.hasChildren(['senderUid', 'senderName', 'text', 'timestamp']) && newData.child('text').val().length <= 1000"
+          }
+        },
+        "alerts": {
+          ".read": "auth != null",
+          "$alertId": {
+            ".write": "auth != null && (root.child('classrooms').child($classroomId).child('hostUid').val() === auth.uid || root.child('classrooms').child($classroomId).child('coHosts').child(auth.uid).val() === true)"
+          }
+        },
+        "polls": {
+          ".read": "auth != null",
+          "$pollId": {
+            ".write": "auth != null && (root.child('classrooms').child($classroomId).child('hostUid').val() === auth.uid || root.child('classrooms').child($classroomId).child('coHosts').child(auth.uid).val() === true)",
+            "votes": {
+              "$uid": {
+                ".read": "auth != null",
+                ".write": "auth != null && auth.uid === $uid"
+              }
+            }
+          }
+        },
+        "quizzes": {
+          ".read": "auth != null",
+          "$quizId": {
+            ".write": "auth != null && (root.child('classrooms').child($classroomId).child('hostUid').val() === auth.uid || root.child('classrooms').child($classroomId).child('coHosts').child(auth.uid).val() === true)",
+            "submissions": {
+              "$uid": {
+                ".read": "auth != null",
+                ".write": "auth != null && auth.uid === $uid"
+              }
+            }
+          }
+        },
+        "speakingRequests": {
+          ".read": "auth != null",
+          "$uid": {
+            ".write": "auth != null && (auth.uid === $uid || root.child('classrooms').child($classroomId).child('hostUid').val() === auth.uid || root.child('classrooms').child($classroomId).child('coHosts').child(auth.uid).val() === true)"
+          }
+        },
+        "attendance": {
+          "$uid": {
+            ".read": "auth != null && (auth.uid === $uid || root.child('classrooms').child($classroomId).child('hostUid').val() === auth.uid || root.child('classrooms').child($classroomId).child('coHosts').child(auth.uid).val() === true)",
+            ".write": "auth != null && (auth.uid === $uid || root.child('classrooms').child($classroomId).child('hostUid').val() === auth.uid)"
+          }
+        }
+      }
+    }
+  }
+}
